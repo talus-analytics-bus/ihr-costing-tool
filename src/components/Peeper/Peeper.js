@@ -15,7 +15,7 @@ export class Peeper extends Component {
 			  onClick={this.props.togglePeeper}
 			>
 			  <AVPlayArrow/>
-			  <b>{this.props.label}</b>
+			  <h3>{this.props.label}</h3>
 			</div>
 			<div className={styles.peeperContent}>
 			{this.props.children}
@@ -32,7 +32,7 @@ export class Peeper extends Component {
 			  onClick={this.props.togglePeeper}
 			>
 			  <AVPlayArrow/>
-			  <strong>{this.props.label}</strong>
+			  <h3>{this.props.label}</h3>
 			</div>
 			<div className={styles.peeperContent}>
 			{this.props.children}

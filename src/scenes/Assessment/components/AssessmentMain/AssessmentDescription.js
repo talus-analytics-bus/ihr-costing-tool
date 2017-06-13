@@ -22,7 +22,7 @@ export class AssessmentDescription extends Component {
   render() {
     return (
       <div className={styles.assessmentDescription}>
-        <h2>{this.props.activeCapacity.name}</h2>
+        <h1>{this.props.activeCapacity.name}</h1>
         <Peeper
           label="Capacity Description"
           show={this.state.showingDetails}

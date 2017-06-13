@@ -9,7 +9,7 @@ export class ManualAssessment extends Component {
   render() {
     return (
       <div>
-        <h2>Enter JEE scores manually</h2>
+        <h1>Enter JEE scores manually</h1>
         <h4>
           Choose a method below to enter JEE indicator scores.
         </h4>

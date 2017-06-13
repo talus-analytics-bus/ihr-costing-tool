@@ -10,7 +10,7 @@ export class Upload extends Component {
     return (
       <div className={styles.upload}>
         <div>
-          <h2>Enter Current JEE Assessment Scores</h2>
+          <h1>Enter Current JEE Assessment Scores</h1>
           <h4>
             Choose a method below to enter current JEE assessment scores. Scores can be added by uploading a report file or by entering scores manually.
           </h4>
