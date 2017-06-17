@@ -104,6 +104,12 @@ export const assessmentReducer = (state = initialState, action) => {
           ...core,
           capacities: core.capacities.map((capacity) => ({
             ...capacity,
+            complete_assessment: capacity.indicators.reduce((complete, indicator) => {
+              if (isSelectedIndicator(indicator, action)) {
+                return !isAlreadySelected(indicator, action) && complete;
+              }
+              return indicator.selectedLevel !== null && complete;
+            }, true),
             indicators: capacity.indicators.map((indicator) => ({
               ...indicator,
               selectedLevel: isSelectedIndicator(indicator, action) ? (isAlreadySelected(indicator, action) ? null : action.level) : indicator.selectedLevel,

@@ -16,7 +16,7 @@ class Capacity extends Component {
   imageSrc = (stage) => {
     const sameCapacityIndex = this.props.active.capacity === this.props.capacityIndex;
     const sameCoreCapacityIndex = this.props.active.core === this.props.coreIndex;
-    const sameStage = this.props.capacity.stage === stage;
+    const sameStage = this.props.active.stage === stage;
     const isActive = sameCapacityIndex && sameCoreCapacityIndex && sameStage;
 
     if (isActive) {
