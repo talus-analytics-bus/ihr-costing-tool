@@ -138,8 +138,9 @@ export const updateExpenseValues = (expense_id, sophistication_level, values) =>
   values,
 })
 
-export const selectExpense = (expense_id, sophistication_level) => ({
+export const selectExpense = (expense_id, sophistication_level, target) => ({
   type: SELECT_EXPENSE,
   expense_id,
   sophistication_level,
+  target,
 })
