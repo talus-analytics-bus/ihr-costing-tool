@@ -45,7 +45,7 @@ export class ExpenseTable extends Component {
               {
                 this.expensesInGroup(this.props.expenses, group.id)
                   .map((expense, index) =>
-                    <ExpenseRowActive expense={expense} activeCurrency={this.props.activeCurrency} key={index}/>
+                    <ExpenseRowActive expense={expense} activeCurrency={this.props.activeCurrency} key={index} target={this.props.target} />
                   )
               }
             </div>

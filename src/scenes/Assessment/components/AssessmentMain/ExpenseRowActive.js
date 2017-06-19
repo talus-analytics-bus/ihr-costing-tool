@@ -13,13 +13,13 @@ const mapDispatchToProps = (dispatch) => {
     toggleEditingExpense: (expense_id, sophistication_level, sophistication_name) => {
       dispatch(toggleEditingExpense(expense_id, sophistication_level, sophistication_name))
     },
-    changeValues: (expense_id, sophistication_level, sophistication_name, values) => {
+    changeValues: (expense_id, sophistication_level, sophistication_name, values, target) => {
       dispatch(updateExpenseValues(expense_id, sophistication_level, values));
       dispatch(toggleEditingExpense(expense_id, sophistication_level, sophistication_name));
       dispatch(selectExpense(expense_id, sophistication_level));
     },
-    selectExpense: (expense_id, sophistication_level) => {
-      dispatch(selectExpense(expense_id, sophistication_level));
+    selectExpense: (expense_id, sophistication_level, target) => {
+      dispatch(selectExpense(expense_id, sophistication_level, target));
     }
   }
 }

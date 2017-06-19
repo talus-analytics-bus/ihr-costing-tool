@@ -56,7 +56,8 @@ export class CapacityTable extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.activeCapacity) {
+    // reset if active capacity has changed
+    if (nextProps.activeCapacity && nextProps.activeCapacity._id !== this.props.activeCapacity._id) {
       this.setState({
         activeColumn: 0
       });

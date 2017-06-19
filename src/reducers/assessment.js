@@ -104,6 +104,12 @@ export const assessmentReducer = (state = initialState, action) => {
           ...core,
           capacities: core.capacities.map((capacity) => ({
             ...capacity,
+            complete_assessment: capacity.indicators.reduce((complete, indicator) => {
+              if (isSelectedIndicator(indicator, action)) {
+                return !isAlreadySelected(indicator, action) && complete;
+              }
+              return indicator.selectedLevel !== null && complete;
+            }, true),
             indicators: capacity.indicators.map((indicator) => ({
               ...indicator,
               selectedLevel: isSelectedIndicator(indicator, action) ? (isAlreadySelected(indicator, action) ? null : action.level) : indicator.selectedLevel,
@@ -298,7 +304,29 @@ export const assessmentReducer = (state = initialState, action) => {
           return false;
         }
         return selected;
-      }
+      };
+      const isInIndicator = (indicator) => {
+        return Boolean(indicator.expenses.find((expense) => expense.expense_id === action.expense_id));
+      };
+      const hasCompletedCosts = (indicator) => {
+        const expenseGroups = [...new Set(indicator.expenses
+          .filter((expense) => expense.target_score === action.target)
+          .map((expense) => expense.expense_id))];
+        const allGroupsAreSelected = expenseGroups
+          .reduce((all, group) => {
+            if (action.expense_id === group) {
+              return !indicator.expenses.find((expense) => expense.expense_id === group
+                && expense.sophistication_level.includes(action.sophistication_level)
+                && expense.target_score === action.target).selected && all;
+            }
+            if (indicator.expenses.find((expense) => expense.expense_id === group && expense.selected)) {
+              return all;
+            }
+            return false;
+          }, true);
+
+        return allGroupsAreSelected;
+      };
 
       return {
         ...state,
@@ -306,8 +334,16 @@ export const assessmentReducer = (state = initialState, action) => {
           ...core,
           capacities: core.capacities.map((capacity) => ({
             ...capacity,
+            complete_costing: capacity.indicators
+              .reduce((complete, indicator) => {
+                if (isInIndicator(indicator)) {
+                  return hasCompletedCosts(indicator) && complete;
+                }
+                return indicator.hasCompleteCosts && complete;
+              }, true),
             indicators: capacity.indicators.map((indicator) => ({
               ...indicator,
+              hasCompleteCosts: isInIndicator(indicator) ? hasCompletedCosts(indicator) : indicator.hasCompleteCosts,
               expenses: indicator.expenses.map((expense) => ({
                 ...expense,
                 selected: isSelected(expense),

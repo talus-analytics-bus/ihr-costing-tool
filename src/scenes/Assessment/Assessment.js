@@ -83,6 +83,7 @@ export class Assessment extends Component {
               indicators: capacity.indicators.map((indicator) => ({
                 ...indicator,
                 selectedLevel: null,
+                hasCompleteCosts: false,
                 expenses: indicator.expenses.map((expense) => ({
                   ...expense,
                   editing: false,
