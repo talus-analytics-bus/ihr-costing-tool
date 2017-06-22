@@ -11,7 +11,7 @@ export class CapacityTableHeaderCell extends Component {
   render() {
     return (
       <div
-        className={`${styles.capacityCell} ${!this.isActive() ? styles.capacityCellInactive : null}`}
+        className={`${styles.capacityHeaderCell} ${!this.isActive() ? styles.capacityCellInactive : null}`}
         onClick={this.props.handleClick}
       >
         {

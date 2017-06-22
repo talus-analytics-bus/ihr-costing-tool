@@ -60,6 +60,11 @@
   }
 }
 
+.capacityHeaderCell {
+  composes: capacityCell;
+  text-align: left;
+}
+
 .capacityCellWithRadio {
   composes: capacityCell;
   display: flex;
