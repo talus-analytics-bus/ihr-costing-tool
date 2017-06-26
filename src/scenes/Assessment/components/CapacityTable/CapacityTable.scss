@@ -78,6 +78,15 @@
   }
 }
 
+.capacityHeaderCellInactive {
+  position: relative;
+}
+
+.capacityHeaderCellExpand {
+  position: absolute;
+  right: -16px;
+}
+
 .capacityCellWithRadio {
   composes: capacityCell;
   display: flex;
