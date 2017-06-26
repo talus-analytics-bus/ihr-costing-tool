@@ -77,8 +77,8 @@ export class CapacityTable extends Component {
                   <CapacityTableHeaderCell
                     key={index}
                     active={this.state.activeColumn === index}
-                    activeText={indicator.name}
-                    inactiveText={indicator.jee_id}
+                    longText={indicator.name}
+                    shortText={indicator.jee_id}
                     handleClick={() => this.handleHeaderCellClick(index)}
                   />
                 )
