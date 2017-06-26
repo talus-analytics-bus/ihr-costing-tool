@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
 import styles from './CapacityTable.scss';
+import ReactTooltip from 'react-tooltip';
 
 export class CapacityTableHeaderCell extends Component {
   isActive = () => this.props.hasOwnProperty('active') ? this.props.active : true;
 
-  activeText = () => this.props.activeText && <p>{this.props.activeText}</p>;
+  activeText = () => this.props.longText &&
+  <div className={styles.capacityHeaderCellActive}>
+    <div className={styles.capacityHeaderCellHeading}>{this.props.shortText}</div>
+    <div className={styles.capacityHeaderCellText}>{this.props.longText}</div>
+  </div>;
 
-  inactiveText = () => this.props.inactiveText && <p>{this.props.inactiveText}</p>;
+  inactiveText = () => this.props.shortText &&
+  <div>
+    <p
+      data-tip
+      data-for={this.props.shortText}
+    >{this.props.shortText}</p>
+    <ReactTooltip
+      id={this.props.shortText}
+    >
+      {this.props.longText}
+    </ReactTooltip>
+  </div>
+  ;
 
   render() {
     return (

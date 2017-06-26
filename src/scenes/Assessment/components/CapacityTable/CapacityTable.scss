@@ -65,6 +65,19 @@
   text-align: left;
 }
 
+.capacityHeaderCellActive {
+  display: flex;
+  flex-direction: row;
+
+  .capacityHeaderCellHeading {
+    flex: 0 0 60px;
+  }
+
+  .capacityHeaderCellText {
+    flex: 1 0 0;
+  }
+}
+
 .capacityCellWithRadio {
   composes: capacityCell;
   display: flex;
