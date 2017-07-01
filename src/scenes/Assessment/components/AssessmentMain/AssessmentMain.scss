@@ -72,6 +72,8 @@
 
 .expenseRowAction {
   flex: 2 0 0;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .expenseCurrency {
@@ -121,6 +123,7 @@
 
 .expenseRowInput {
   display: flex;
+  flex: 0 0 80px;
 }
 
 .expenseTableLabels {
