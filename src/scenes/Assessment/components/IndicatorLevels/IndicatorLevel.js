@@ -21,7 +21,7 @@ export class IndicatorLevel extends Component {
       >
         <Avatar
           className={styles.indicatorLevelNumber}
-        >{this.props.index}</Avatar>
+        >{this.props.index + 1}</Avatar>
         {this.props.label}
       </Chip>
     );
