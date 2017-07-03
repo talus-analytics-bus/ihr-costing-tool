@@ -16,15 +16,14 @@ const path = ({width = 0, height = 0}) => {
     .projection(projection(width, height));
 }
 
-let pathEl, defaultZoom;
+let pathEl, defaultZoom, zoom;
 
 export class MapPicker extends Component {
   constructor(props) {
     super(props);
 
     defaultZoom = {
-      translate: 0,
-      scale: 1,
+      transform: false,
     };
 
     this.state = {
@@ -36,6 +35,7 @@ export class MapPicker extends Component {
   }
 
   resetZoom = () => {
+    d3.select(this.refs.svgEl).call(zoom.transform, d3.zoomIdentity);
     this.setState({
       ...defaultZoom,
     })
@@ -79,20 +79,17 @@ export class MapPicker extends Component {
     });
     pathEl = path(dimensions);
 
-    const zoom = d3.zoom()
-      .scaleExtent([1, 8])
+    zoom = d3.zoom()
+      .scaleExtent([1, 10])
       .on('zoom', () => {
         this.setState({
-          translate: d3.event.translate,
-          scale: d3.event.scale,
+          transform: d3.event.transform,
         })
       });
     d3.select(this.refs.svgEl).call(zoom);
   }
 
   selectCountry = (country) => {
-    console.log('clicked');
-    console.log(country);
     this.setState({
       activeCountry: country.ISO_A2,
     });
@@ -108,9 +105,7 @@ export class MapPicker extends Component {
   }
 
   render() {
-    const originalZoom = () => {
-      return this.state.scale === defaultZoom.scale && this.state.translate === defaultZoom.translate
-    }
+    const originalZoom = () => this.state.transform === defaultZoom.transform;
 
     return (
       <div
@@ -123,12 +118,7 @@ export class MapPicker extends Component {
           ref="svgEl"
         >
           <g
-            transform={`
-              translate(
-                ${ this.state.translate }
-              )
-              scale(${ this.state.scale })
-            `}
+            {...this.state.transform ? {transform: this.state.transform} : null}
           >
             {
               this.state.features.map((feature) =>
