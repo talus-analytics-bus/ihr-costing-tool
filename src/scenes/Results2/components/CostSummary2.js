@@ -61,7 +61,16 @@ jeeTree.forEach((core) => {
 function wrap(text, width) {
   text.each(function() {
     var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
+        fullText = text.text(),
+        trimmedText = text.text().split(/\s+/).reduce((trimmed, word) => {
+          const count = trimmed.reduce((length, w) => w.length + length, 0) + trimmed.length - 1;
+          if (count < 50) {
+            return trimmed.concat([word]);
+          }
+          return trimmed;
+        }, []).join(' '),
+        trimmedTextFinal = trimmedText.length < text.text().length ? trimmedText + '...' : trimmedText,
+        words = trimmedTextFinal.split(/\s+/).reverse(),
         word,
         line = [],
         lineNumber = 0,
@@ -78,6 +87,10 @@ function wrap(text, width) {
         line = [word];
         tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
       }
+    }
+    if (fullText != trimmedTextFinal) {
+      text.attr('data-tip', fullText);
+      ReactTooltip.rebuild();
     }
   });
 }
@@ -142,7 +155,7 @@ export class CostSummary extends Component {
 
 		const y = d3.scaleLinear()
 			.range([height, 0]);
-			
+
 		const yAxis = d3.axisLeft()
 			.tickSizeOuter(10)
 			.tickArguments([6])
@@ -179,7 +192,7 @@ export class CostSummary extends Component {
 		// add axes labels
 		const xAxisLabel = chart.append('text')
 			.attr('x', width / 2)
-			.attr('y', height + 80)
+			.attr('y', height + 120)
 			.style('text-anchor', 'middle')
 			.style('font-weight', 'bold')
 			.style('font-size', '1.5em')
@@ -242,7 +255,9 @@ export class CostSummary extends Component {
 						newObj[categories[i].name] = originalCost * randomFracs[i];
 					}
 					newObj.total = originalCost;
-					if (dataType === 'indicator') newObj.jee_id = d.jee_id;
+					if (dataType === 'indicator') {
+            newObj.name = `${d.jee_id} ${d.name}`;
+          }
 					else newObj.name = d.name;
 				   	catCostData.push(newObj)
 				});
@@ -252,16 +267,18 @@ export class CostSummary extends Component {
 
 					// generate stack bar heights data object
 				   	var y0 = 0;
-				   	
-				    newObj.catCosts = catNames.map(function(name) { 
+
+				    newObj.catCosts = catNames.map(function(name) {
 					      return {
-					      	name: name, 
-					      	y0: y0, 
+					      	name: name,
+					      	y0: y0,
 					      	y1: y0 += +d[name],
 					      	value: +d[name]
-					      }; 
+					      };
 					  });
-					if (dataType === 'indicator') newObj.jee_id = d.jee_id;
+					if (dataType === 'indicator') {
+            newObj.name = d.jee_id ? `${d.jee_id} ${d.name}` : d.name;
+          }
 					else newObj.name = d.name;
 					newObj.total = d.total;
 				    dataColl.push(newObj);
@@ -272,11 +289,12 @@ export class CostSummary extends Component {
 			}
 
 			// adjust axes
-			if (dataType === 'indicator') {
-				x0.domain(chartData.map(d => d.jee_id));
-			} else {
-				x0.domain(chartData.map(d => d.name));
-			}
+      x0.domain(chartData.map(d => {
+        if (dataType === 'indicator') {
+          return `${d.jee_id} ${d.name}`;
+        }
+        return d.name;
+      }));
 
 		   	const grouped = chartType === 'grouped';
 			x1.domain(catNames);
@@ -305,7 +323,10 @@ export class CostSummary extends Component {
 		      const newBarGroups = barGroups.enter().append("g")
 		      .attr("class", "g")
 		      .attr("class", "bar-group")
-		      .attr("transform", function(d) { return "translate(" + x0(d.name) + ",0)"; });
+		      .attr("transform", function(d) {
+		        return "translate(" + x0(
+              dataType === 'indicator' ? `${d.jee_id} ${d.name}` : d.name) + ",0)";
+		      });
 
 			if (!grouped) {
 				var newRect = newBarGroups.selectAll(".bar")
@@ -327,12 +348,12 @@ export class CostSummary extends Component {
 					        .attr("y", function(d) { return y(d.value); })
 					        .attr("height", function(d) { return height - y(d.value); })
 					        .style("fill", function(d) { return color(d.name); })
-			}		
+			}
 		      newBarGroups.append('text')
 				.attr('class', 'value-label')
 				.style('text-anchor', 'middle')
 				.style('font-size', '0.9em');
-			
+
 			barGroups.exit().remove();
 
 			chart.updateBarHeight(multiplier, grouped, dataColl, x0, x1);
@@ -341,8 +362,10 @@ export class CostSummary extends Component {
 
 		chart.updateBarHeight = (multiplier, grouped, dataColl, x0, x1) => {
 			const barGroups = chart.selectAll('.bar-group')
-				.attr("transform", function(d) { return "translate(" + x0(d.name || d.jee_id) + ",0)"; });;
-			
+				.attr("transform", function(d) {
+				  return "translate(" + x0(d.name || d.jee_id) + ",0)";
+				});
+
 			// adjust y axis
 			yAxis.scale(y);
 			yAxisG.call(yAxis);
@@ -409,7 +432,7 @@ export class CostSummary extends Component {
 		});
 
 		return chart;
-		
+
 	};
 
 	componentDidMount() {
@@ -467,7 +490,7 @@ export class CostSummary extends Component {
 			}
 		});
 			this.costChart.update(this.state.chartType, true, parseFloat(event.target.value));
-		// if (event.target.value === "1") 
+		// if (event.target.value === "1")
 		// else if (event.target.value === "2") this.costChart.update(this.state.chartType, false, 1.5);
 		// else if (event.target.value === "5") this.costChart.update(this.state.chartType, false, 5);
 	}
@@ -560,7 +583,7 @@ export class CostSummary extends Component {
 								: ''
 	}*/}
 						</div>
-						<CostChartOptions 
+						<CostChartOptions
 									showByCategoryValue={this.state.showByCategory}
 									toggleByCategory={() => this.toggleByCategory()}
 									costCategory={this.state.costCategory}
